@@ -40,6 +40,8 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 
+let gameStarted = false; // false mientras se muestra la pantalla de inicio
+let combo = 0, comboMax = 0; // piezas consecutivas que limpian líneas
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
 function createBoard() {
@@ -110,6 +112,7 @@ function clearLines() {
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
+  return cleared;
 }
 
 function ghostY() {
@@ -137,7 +140,12 @@ function softDrop() {
 
 function lockPiece() {
   merge();
-  clearLines();
+  if (clearLines()) {
+    combo++;
+    comboMax = Math.max(comboMax, combo);
+  } else {
+    combo = 0;
+  }
   spawn();
 }
 
@@ -224,6 +232,7 @@ function endGame() {
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
+  registrarFinPartida(score, lines, comboMax);
 }
 
 function togglePause() {
@@ -263,6 +272,10 @@ function init() {
   level = 1;
   paused = false;
   gameOver = false;
+  gameStarted = true;
+  combo = 0;
+  comboMax = 0;
+  ocultarInicio();
   dropInterval = 1000;
   dropAccum = 0;
   lastTime = performance.now();
@@ -275,6 +288,8 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+  if (!gameStarted) return;
   if (e.code === 'KeyP') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
@@ -301,4 +316,8 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
+// Pantalla de inicio: se prepara el tablero pero la partida no corre hasta pulsar Jugar
 init();
+cancelAnimationFrame(animId);
+gameStarted = false;
+mostrarInicio();
