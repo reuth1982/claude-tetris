@@ -96,6 +96,23 @@ body {
   border-radius: 4px;
 }
 
+/* ---- Skins: fondo de página por skin ---- */
+body[data-skin="neon"]   { background: #05050a; }
+body[data-skin="pastel"] { background: #f3e9e1; color: #5a4a4a; }
+body[data-skin="pixel"]  { background: #0a1018; }
+body[data-skin="pastel"] .value { color: #b07aa1; }
+body[data-skin="pastel"] .label { color: #9a8a8a; }
+body[data-skin="pastel"] .controls li { color: #6a5a5a; }
+
+#skin-select {
+  background: #22223a;
+  color: #ccc;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
 /* ---- Controles ---- */
 .controls ul {
   list-style: none;
