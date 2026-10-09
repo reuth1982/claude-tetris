@@ -22,7 +22,7 @@ function cargarRecords() {
     const data = JSON.parse(localStorage.getItem(RECORDS_KEY));
     if (!data || !Array.isArray(data.top)) return recordsVacios();
     return {
-      top: data.top.slice(0, RECORDS_MAX),
+      top: data.top.filter(r => r && typeof r.name === 'string' && Number.isFinite(r.score) && Number.isFinite(r.lines)).slice(0, RECORDS_MAX),
       bestCombo: Number(data.bestCombo) || 0,
       maxLines: Number(data.maxLines) || 0,
     };
@@ -135,7 +135,7 @@ function crearReset(cont) {
     no.textContent = 'No';
     no.addEventListener('click', () => {
       caja.textContent = '';
-      caja.appendChild(crearReset(cont).firstChild);
+      caja.appendChild(btn);
     });
     caja.append(msg, si, no);
   });
@@ -161,7 +161,12 @@ function confirmarNombre() {
   const name = (input && input.value.trim().slice(0, NOMBRE_MAX)) || 'Anónimo';
   const rec = cargarRecords();
   const pos = posicionEnTop(rec, pendienteRecord.score);
-  const i = pos === -1 ? rec.top.length : pos;
+  if (pos === -1) { // otra pestaña llenó el top: ya no entra
+    pendienteRecord = null;
+    renderRecords(recordsOverEl, rec, -1, false);
+    return;
+  }
+  const i = pos;
   rec.top.splice(i, 0, {
     name,
     score: pendienteRecord.score,
