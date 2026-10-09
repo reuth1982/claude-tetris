@@ -82,7 +82,11 @@ jobs:
             4. Publica UN solo comentario con el diagnóstico usando
                `gh issue comment ${{ github.event.issue.number }} --edit-last --create-if-none --body "..."`
                (así, si el issue se edita, se actualiza el comentario en vez de crear otro).
-               Escribe el comentario EN ESPAÑOL con este formato exacto:
+               Escribe el comentario EN ESPAÑOL, en formato Markdown válido para que GitHub
+               lo renderice correctamente (encabezados con `##`, negritas con `**`, listas con
+               `-` o `1.`, código en línea con comillas invertidas y bloques de código con
+               triple comilla invertida; deja una línea en blanco entre párrafos/secciones).
+               Usa este formato exacto:
 
                ## 🤖 Diagnóstico automático
                **Resumen:** una o dos frases.
